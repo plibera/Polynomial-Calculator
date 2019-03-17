@@ -1,3 +1,6 @@
+/*Piotr Libera
+*/
+
 #include "polynomialClasses.h"
 
 
@@ -31,6 +34,9 @@ void Monomial::createName(){
 }
 
 
+
+
+
 Monomial::Monomial(int coeff, int exp){
     name = new char[MAX_NAME_SIZE];
     nameCopy = new char[MAX_NAME_SIZE];
@@ -48,11 +54,15 @@ Monomial::Monomial(int coeff, int exp){
     std::cout<<"Constructor of the Monomial "<<name<<" was called."<<std::endl;
 }
 
+
 Monomial::~Monomial(){
     std::cout<<"Destructor of the Monomial "<<name<<" was called"<<std::endl;
     delete[] name;
     delete[] nameCopy;
 }
+
+
+
 
 char* Monomial::getName(){
     if(!nameCreated)
@@ -63,9 +73,13 @@ char* Monomial::getName(){
     return nameCopy;
 }
 
+
+
 std::ostream & operator<< (std::ostream &output, const Monomial &m){
         return output<<m.name;
-    }
+}
+
+
 
 int Monomial::getCoefficient(){
     return coefficient;
@@ -76,13 +90,27 @@ void Monomial::setCoefficient(int coeff){
     createName();
 }
 
+
+
+//Class Polynomial--------------------------------------------------------------
+
 void Polynomial::createName(){
     char* c;
     int counter = 0;
     int j;
+    bool firstMonomial = 1;
     for(int i = degree; i >= 0; --i){
         if(monomials[i]->getCoefficient() == 0)
             continue;
+        if(!firstMonomial && i != degree && monomials[i]->getCoefficient() > 0){
+            name[counter++] = ' ';
+            name[counter++] = '+';
+        }
+        else if(!firstMonomial && i != degree){
+            name[counter++] = ' ';
+            name[counter++] = '-';
+        }
+        firstMonomial = 0;
         c = monomials[i]->getName();
         j = 0;
         while(c[j] != 0){
@@ -97,17 +125,7 @@ void Polynomial::createName(){
             name[--counter] = 0;
             name[--counter] = 0;
         }
-        if(i > 0){
-            if(monomials[i-1]->getCoefficient() < 0){
-                name[counter++] = ' ';
-                name[counter++] = '-';
-            }
-            else{
-                name[counter++] = ' ';
-                name[counter++] = '+';
-            }
-        }
-        else{
+        else if(i == 0){
             name[--counter] = 0;
             name[--counter] = 0;
             name[--counter] = 0;
@@ -125,16 +143,20 @@ void Polynomial::createName(){
 
 
 
+
+
 Polynomial::Polynomial(int deg, std::vector<int> coefficients){
     degree = std::min(MAX_POLYNOMIAL_DEGREE, std::max(0, deg));
     degree = std::min(degree, (int)(coefficients.size()-1));
     monomials = new Monomial*[MAX_POLYNOMIAL_DEGREE+1];
     name = new char[MAX_POLY_NAME_LENGTH];
+    while(degree > 0 && coefficients[degree] == 0)
+        degree--;
     for(int i = 0; i <= degree; ++i){
         monomials[i] = new Monomial(coefficients[i], i);
     }
     createName();
-    std::cout<<"Constructor of the Polynomial "<<name<<" was called"<<std::endl;;
+    std::cout<<"Constructor of the Polynomial "<<name<<" was called"<<std::endl;
 }
 
 Polynomial::~Polynomial(){
@@ -146,20 +168,14 @@ Polynomial::~Polynomial(){
     delete[] name;
 }
 
+
+
+//Overloaded operators----------------------------------------------------------
+
 std::ostream & operator<< (std::ostream &output, const Polynomial &p){
     return output<<p.name;
 }
 
-Monomial* Polynomial::getMonomial(int i){
-    if(i < 0 || i > degree){
-        return NULL;
-    }
-    return monomials[i];
-}
-
-int Polynomial::getDegree(){
-    return degree;
-}
 
 bool Polynomial::operator== (Polynomial &p){
     if(degree != p.getDegree())
@@ -236,10 +252,10 @@ bool Polynomial::operator-= (Polynomial &p){
         monomials[i] = m;
     }
     degree = std::max(degree, p.getDegree());
-    createName();
     while(degree > 0 && monomials[degree]->getCoefficient() == 0){
         degree--;
     }
+    createName();
     return true;
 }
 
@@ -264,4 +280,61 @@ Polynomial* Polynomial::operator- (Polynomial &p){
     }
     Polynomial* poly = new Polynomial(deg, coeffs);
     return poly;
+}
+
+
+bool Polynomial::operator*= (Polynomial &p){
+    int newCoeff;
+    int newDegree = std::min(degree+p.getDegree(), MAX_POLYNOMIAL_DEGREE);
+    for(int i = 0; i <= newDegree; ++i){
+        newCoeff = 0;
+        for(int j = 0; j <= i; ++j){
+            if(j <= degree && i-j <= p.getDegree()){
+                newCoeff += monomials[j]->getCoefficient() *
+                              p.getMonomial(i-j)->getCoefficient();
+            }
+        }
+        monomials[i]->setCoefficient(newCoeff);
+    }
+    degree = newDegree;
+    while(degree > 0 && monomials[degree]->getCoefficient() == 0)
+        degree--;
+        createName();
+    return true;
+}
+
+Polynomial* Polynomial::operator* (Polynomial &p){
+    int deg = std::min(degree+p.getDegree(), MAX_POLYNOMIAL_DEGREE);
+    std::vector<int> coeffs;
+    int newCoeff;
+    for(int i = 0; i <= deg; ++i){
+        newCoeff = 0;
+        for(int j = 0; j <= i; ++j){
+            if(j <= degree && i-j <= p.getDegree()){
+                newCoeff += monomials[j]->getCoefficient() *
+                              p.getMonomial(i-j)->getCoefficient();
+            }
+        }
+        coeffs.push_back(newCoeff);
+    }
+    while(deg > 0 && coeffs[deg] == 0){
+        deg--;
+    }
+    Polynomial* poly = new Polynomial(deg, coeffs);
+    return poly;
+}
+
+
+
+
+
+Monomial* Polynomial::getMonomial(int i){
+    if(i < 0 || i > degree){
+        return NULL;
+    }
+    return monomials[i];
+}
+
+int Polynomial::getDegree(){
+    return degree;
 }

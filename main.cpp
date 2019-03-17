@@ -1,8 +1,13 @@
 /* Piotr Libera
   Polynomial calculator
   PROI Project 1
+
+  This code lets to interactively test every required feature of class Polynomial
 */
 #include "polynomialClasses.h"
+
+#define A_ASCII 65
+#define MAX_NUMBER_OF_POLYNOMIALS 26
 
 using namespace std;
 
@@ -22,7 +27,7 @@ int main(){
     bool* createdPolynomial = new bool[MAX_NUMBER_OF_POLYNOMIALS];
     for(int i = 0; i < MAX_NUMBER_OF_POLYNOMIALS; ++i) createdPolynomial[i] = 0;
 
-    cout<<"The polynomial calculator. There are currently no polynomials in memory."<<endl;
+    cout<<"The polynomial calculator. Allowed degree of a polynomial is 0 to 3"<<endl;
     cout<<"Choose an action:"<<endl;
 
     char c;
@@ -95,6 +100,7 @@ void newPolynomial(Polynomial** polyArray, bool* createdPolynomial){
         delete polyArray[index];
     polyArray[index] = new Polynomial(deg, coeffs);
     createdPolynomial[index] = 1;
+    cout<<"Polynomial "<<c<<" created"<<endl;
 }
 
 
@@ -187,26 +193,38 @@ void polynomialOperation(Polynomial** polyArray, bool* createdPolynomial,
     if(c==a){
         switch(operation){
             case 0:
+                cout<<*polyArray[indexa]<<" += "<<*polyArray[indexb]<<" = ";
                 *polyArray[indexa] += *polyArray[indexb];
+                cout<<*polyArray[indexa]<<endl;
                 break;
             case 1:
+                cout<<*polyArray[indexa]<<" -= "<<*polyArray[indexb]<<" = ";
                 *polyArray[indexa] -= *polyArray[indexb];
+                cout<<*polyArray[indexa]<<endl;
                 break;
             case 2:
-                //*polyArray[indexa] *= *polyArray[indexb];
+                cout<<*polyArray[indexa]<<" *= "<<*polyArray[indexb]<<" = ";
+                *polyArray[indexa] *= *polyArray[indexb];
+                cout<<*polyArray[indexa]<<endl;
                 break;
         }
     }
     else if(c==b){
         switch(operation){
             case 0:
+                cout<<*polyArray[indexb]<<" += "<<*polyArray[indexa]<<" = ";
                 *polyArray[indexb] += *polyArray[indexa];
+                cout<<*polyArray[indexb]<<endl;
                 break;
             case 1:
+                cout<<*polyArray[indexb]<<" -= "<<*polyArray[indexa]<<" = ";
                 *polyArray[indexb] -= *polyArray[indexa];
+                cout<<*polyArray[indexb]<<endl;
                 break;
             case 2:
-                //*polyArray[indexb] *= *polyArray[indexa];
+                cout<<*polyArray[indexb]<<" *= "<<*polyArray[indexa]<<" = ";
+                *polyArray[indexb] *= *polyArray[indexa];
+                cout<<*polyArray[indexb]<<endl;
                 break;
         }
     }
@@ -217,12 +235,15 @@ void polynomialOperation(Polynomial** polyArray, bool* createdPolynomial,
         switch(operation){
             case 0:
                 polyArray[indexc] = *polyArray[indexa] + *polyArray[indexb];
+                cout<<*polyArray[indexa]<<" + "<<*polyArray[indexb]<<" = "<<*polyArray[indexc]<<endl;
                 break;
             case 1:
                 polyArray[indexc] = *polyArray[indexa] - *polyArray[indexb];
+                cout<<*polyArray[indexa]<<" - "<<*polyArray[indexb]<<" = "<<*polyArray[indexc]<<endl;
                 break;
             case 2:
-                //polyArray[indexc] = *polyArray[indexa] * *polyArray[indexb];
+                polyArray[indexc] = *polyArray[indexa] * *polyArray[indexb];
+                cout<<*polyArray[indexa]<<" * "<<*polyArray[indexb]<<" = "<<*polyArray[indexc]<<endl;
                 break;
         }
         createdPolynomial[indexc] = 1;
