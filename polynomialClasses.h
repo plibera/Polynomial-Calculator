@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <ios>
 #include <limits>
+#include <vector>
 
 #define MAX_POLYNOMIAL_DEGREE 3
 #define MAX_COEFFICIENT_LENGTH 30
@@ -44,9 +45,13 @@ private:
     void createName();
 
 public:
-    Polynomial(int deg, int* coefficients);
+    Polynomial(int deg, std::vector<int> coefficients);
     ~Polynomial();
     friend std::ostream & operator<< (std::ostream &output, const Polynomial &p);
+    bool operator== (Polynomial &p);
+    bool operator!= (Polynomial &p);
+    Monomial* getMonomial(int i);
+    int getDegree();
 };
 
 #endif

@@ -30,6 +30,7 @@ void Monomial::createName(){
     nameCreated = 1;
 }
 
+
 Monomial::Monomial(int coeff, int exp){
     name = new char[MAX_NAME_SIZE];
     nameCopy = new char[MAX_NAME_SIZE];
@@ -115,8 +116,11 @@ void Polynomial::createName(){
     }
 }
 
-Polynomial::Polynomial(int deg, int* coefficients){
+
+
+Polynomial::Polynomial(int deg, std::vector<int> coefficients){
     degree = std::min(MAX_POLYNOMIAL_DEGREE, std::max(0, deg));
+    degree = std::min(degree, (int)(coefficients.size()-1));
     monomials = new Monomial*[MAX_POLYNOMIAL_DEGREE+1];
     name = new char[MAX_POLY_NAME_LENGTH];
     for(int i = 0; i <= degree; ++i){
@@ -137,4 +141,37 @@ Polynomial::~Polynomial(){
 
 std::ostream & operator<< (std::ostream &output, const Polynomial &p){
     return output<<p.name;
+}
+
+Monomial* Polynomial::getMonomial(int i){
+    if(i < 0 || i > degree){
+        return NULL;
+    }
+    return monomials[i];
+}
+
+int Polynomial::getDegree(){
+    return degree;
+}
+
+bool Polynomial::operator== (Polynomial &p){
+    if(degree != p.getDegree())
+        return false;
+    bool result = 1;
+    for(int i = 0; i <= p.getDegree(); ++i){
+        if(monomials[i]->getCoefficient() != p.getMonomial(i)->getCoefficient())
+            result = 0;
+    }
+    return result;
+}
+
+bool Polynomial::operator!= (Polynomial &p){
+    if(degree != p.getDegree())
+        return true;
+    bool result = 0;
+    for(int i = 0; i <= p.getDegree(); ++i){
+        if(monomials[i]->getCoefficient() != p.getMonomial(i)->getCoefficient())
+            result = 1;
+    }
+    return result;
 }

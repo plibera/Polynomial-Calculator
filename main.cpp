@@ -10,13 +10,15 @@ void printMenu(Polynomial** polyArray, bool* createdPolynomial);
 void testPrint();
 void inputError();
 bool isCapitalLetter(char c);
-
-//bool createPolynomial(Polynomial* poly){
-
-//}
+void newPolynomial(Polynomial** polyArray, bool* createdPolynomial);
+void deletePolynomial(Polynomial** polyArray, bool* createdPolynomial);
+void testPolynomialsIfEqual(Polynomial** polyArray, bool* createdPolynomial);
+void addPolynomials(Polynomial** polyArray, bool* createdPolynomial);
+void subtractPolynomials(Polynomial** polyArray, bool* createdPolynomial);
+void multiplyPolynomials(Polynomial** polyArray, bool* createdPolynomial);
 
 int main(){
-    testPrint();
+    //testPrint();
     Polynomial** polyArray = new Polynomial*[MAX_NUMBER_OF_POLYNOMIALS];
     bool* createdPolynomial = new bool[MAX_NUMBER_OF_POLYNOMIALS];
     for(int i = 0; i < MAX_NUMBER_OF_POLYNOMIALS; ++i) createdPolynomial[i] = 0;
@@ -34,25 +36,126 @@ int main(){
         }
         switch(c){
             case 'n':
-                cin>>c;
-                if(!isCapitalLetter(c)){
-                    inputError();
-                    break;
-                }
-                c -= A_ASCII;
-                //if(createPolynomial(polyArray[(int)c]))
-                  //  createdPolynomial[(int)c]
+                newPolynomial(polyArray, createdPolynomial);
                 break;
-
+            case 'd':
+                deletePolynomial(polyArray, createdPolynomial);
+                break;
+            case 'e':
+                testPolynomialsIfEqual(polyArray, createdPolynomial);
+                break;
+            case 'a':
+                //addPolynomials(polyArray, createdPolynomial);
+                break;
+            case 's':
+                //subtractPolynomials(polyArray, createdPolynomial);
+                break;
+            case 'm':
+                //multiplyPolynomials(polyArray, createdPolynomial);
+                break;
+            default:
+                if(c != 'q')inputError();
         }
     }
 
     return 0;
 }
 
+void newPolynomial(Polynomial** polyArray, bool* createdPolynomial){
+    char c;
+    cin>>c;
+    if(!isCapitalLetter(c)){
+        inputError();
+        return;
+    }
+    int index = c-A_ASCII;
+    int deg = 0;
+    cout<<"Degree of "<<c<<": ";
+    cin>>deg;
+    if(deg < 0 || deg > MAX_POLYNOMIAL_DEGREE){
+        inputError();
+        return;
+    }
+    int temp;
+    vector<int> coeffs;
+    for(int i = deg; i >= 0; --i){
+        cout<<"Coefficient of x^"<<i<<": ";
+        cin>>temp;
+        if(!cin){
+            inputError();
+            return;
+        }
+        coeffs.push_back(temp);
+    }
+    for(size_t i = 0; i < coeffs.size()/2; ++i){
+        temp = coeffs[i];
+        coeffs[i] = coeffs[coeffs.size()-i-1];
+        coeffs[coeffs.size()-i-1] = temp;
+    }
+    if(createdPolynomial[index])
+        delete polyArray[index];
+    polyArray[index] = new Polynomial(deg, coeffs);
+    createdPolynomial[index] = 1;
+}
+
+
+void deletePolynomial(Polynomial** polyArray, bool* createdPolynomial){
+    char c;
+    cin>>c;
+    if(!isCapitalLetter(c)){
+        inputError();
+        return;
+    }
+    int index = c-A_ASCII;
+    if(!createdPolynomial[index]){
+        cout<<"There is no polynomial "<<c<<endl;
+        return;
+    }
+    delete polyArray[index];
+    createdPolynomial[index] = 0;
+    cout<<"Polynomial "<<c<<" deleted"<<endl;
+}
+
+
+void testPolynomialsIfEqual(Polynomial** polyArray, bool* createdPolynomial){
+    char a;
+    cin>>a;
+    if(!isCapitalLetter(a)){
+        inputError();
+        return;
+    }
+    char b;
+    cin>>b;
+    if(!isCapitalLetter(b)){
+        inputError();
+        return;
+    }
+    int indexa = a-A_ASCII;
+    int indexb = b-A_ASCII;
+    if(!createdPolynomial[indexa]){
+        cout<<"There is no polynomial "<<a<<endl;
+        return;
+    }
+    if(!createdPolynomial[indexb]){
+        cout<<"There is no polynomial "<<b<<endl;
+        return;
+    }
+    if(*polyArray[indexa] == *polyArray[indexb]){
+        cout<<"Polynomials "<<a<<" and "<<b<<" are equal"<<endl;
+    }
+    else if(*polyArray[indexa] != *polyArray[indexb]){
+        cout<<"Polynomials "<<a<<" and "<<b<<" are not equal"<<endl;
+    }
+    else{
+        cout<<"Can't decide"<<endl;//shouldn't happen
+    }
+}
+
 
 void printMenu(Polynomial** polyArray, bool* createdPolynomial){
+    cout<<endl<<endl;
     cout<<"n X - add new polynomial X, possibly overwriting if X contains data"<<endl;
+    cout<<"d X - delete polynomial X"<<endl;
     //cout<<"p X - print polynomial X"<<endl;
     cout<<"e X Y - test if polynomials X and Y are equal"<<endl;
     cout<<"a X Y - add polynomials X and Y"<<endl;
@@ -74,14 +177,17 @@ void printMenu(Polynomial** polyArray, bool* createdPolynomial){
             }
         }
     }
-    cout<<endl;
 }
 
 void testPrint(){
     Monomial *a = new Monomial(-12345678, 2);
     cout<<*a<<endl;
     delete a;
-    int tab[] = {-12, 5, 0, -1};
+    vector<int> tab;
+    tab.push_back(-12);
+    tab.push_back(5);
+    //tab.push_back(0);
+    //tab.push_back(-1);
     Polynomial *poly = new Polynomial(3, tab);
     cout<<*poly<<endl;
     delete poly;
