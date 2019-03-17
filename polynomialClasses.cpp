@@ -118,6 +118,9 @@ void Polynomial::createName(){
         name[counter] = 0;
         counter--;
     }
+    if(degree == 0 && monomials[0]->getCoefficient() == 0){
+        name[0] = '0';
+    }
 }
 
 
@@ -191,6 +194,9 @@ bool Polynomial::operator+= (Polynomial &p){
         monomials[i] = m;
     }
     degree = std::max(degree, p.getDegree());
+    while(degree > 0 && monomials[degree]->getCoefficient() == 0){
+        degree--;
+    }
     createName();
     return true;
 }
@@ -210,6 +216,51 @@ Polynomial* Polynomial::operator+ (Polynomial &p){
         for(int i = degree+1; i <= p.getDegree(); ++i){
             coeffs.push_back(p.getMonomial(i)->getCoefficient());
         }
+    }
+    while(deg > 0 && coeffs[deg] == 0){
+        deg--;
+    }
+    Polynomial* poly = new Polynomial(deg, coeffs);
+    return poly;
+}
+
+
+bool Polynomial::operator-= (Polynomial &p){
+    int newCoeff;
+    for(int i = 0; i <= std::min(degree, p.getDegree()); ++i){
+        newCoeff = monomials[i]->getCoefficient()-p.getMonomial(i)->getCoefficient();
+        monomials[i]->setCoefficient(newCoeff);
+    }
+    for(int i = degree+1; i <= p.getDegree(); ++i){
+        Monomial* m = new Monomial((-1)*p.getMonomial(i)->getCoefficient(), i);
+        monomials[i] = m;
+    }
+    degree = std::max(degree, p.getDegree());
+    createName();
+    while(degree > 0 && monomials[degree]->getCoefficient() == 0){
+        degree--;
+    }
+    return true;
+}
+
+Polynomial* Polynomial::operator- (Polynomial &p){
+    int deg = std::max(degree, p.getDegree());
+    std::vector<int> coeffs;
+    for(int i = 0; i <= std::min(degree, p.getDegree()); ++i){
+        coeffs.push_back(monomials[i]->getCoefficient()-p.getMonomial(i)->getCoefficient());
+    }
+    if(degree > p.getDegree()){
+        for(int i = p.getDegree()+1; i <= degree; ++i){
+            coeffs.push_back(monomials[i]->getCoefficient());
+        }
+    }
+    else{
+        for(int i = degree+1; i <= p.getDegree(); ++i){
+            coeffs.push_back((-1)*p.getMonomial(i)->getCoefficient());
+        }
+    }
+    while(deg > 0 && coeffs[deg] == 0){
+        deg--;
     }
     Polynomial* poly = new Polynomial(deg, coeffs);
     return poly;

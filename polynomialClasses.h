@@ -53,6 +53,10 @@ public:
     bool operator!= (Polynomial &p);
     bool operator+= (Polynomial &p);
     Polynomial* operator+ (Polynomial &p);
+    bool operator-= (Polynomial &p);
+    Polynomial* operator- (Polynomial &p);
+    //bool operator*= (Polynomial &p);
+    //Polynomial* operator* (Polynomial &p);
     Monomial* getMonomial(int i);
     int getDegree();
 };

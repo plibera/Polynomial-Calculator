@@ -184,22 +184,48 @@ void polynomialOperation(Polynomial** polyArray, bool* createdPolynomial,
     int indexc = c-A_ASCII;
     //vector<int> temp;
     //Polynomial p(0, temp);
-    switch(operation){
-        case 0:
-            if(c==a){
+    if(c==a){
+        switch(operation){
+            case 0:
                 *polyArray[indexa] += *polyArray[indexb];
-            }
-            else if(c==b){
+                break;
+            case 1:
+                *polyArray[indexa] -= *polyArray[indexb];
+                break;
+            case 2:
+                //*polyArray[indexa] *= *polyArray[indexb];
+                break;
+        }
+    }
+    else if(c==b){
+        switch(operation){
+            case 0:
                 *polyArray[indexb] += *polyArray[indexa];
-            }
-            else{
-                if(createdPolynomial[indexc]){
-                    delete polyArray[indexc];
-                }
+                break;
+            case 1:
+                *polyArray[indexb] -= *polyArray[indexa];
+                break;
+            case 2:
+                //*polyArray[indexb] *= *polyArray[indexa];
+                break;
+        }
+    }
+    else{
+        if(createdPolynomial[indexc]){
+            delete polyArray[indexc];
+        }
+        switch(operation){
+            case 0:
                 polyArray[indexc] = *polyArray[indexa] + *polyArray[indexb];
-                createdPolynomial[indexc] = 1;
-            }
-            break;
+                break;
+            case 1:
+                polyArray[indexc] = *polyArray[indexa] - *polyArray[indexb];
+                break;
+            case 2:
+                //polyArray[indexc] = *polyArray[indexa] * *polyArray[indexb];
+                break;
+        }
+        createdPolynomial[indexc] = 1;
     }
 }
 
