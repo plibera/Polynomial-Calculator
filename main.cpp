@@ -13,9 +13,8 @@ bool isCapitalLetter(char c);
 void newPolynomial(Polynomial** polyArray, bool* createdPolynomial);
 void deletePolynomial(Polynomial** polyArray, bool* createdPolynomial);
 void testPolynomialsIfEqual(Polynomial** polyArray, bool* createdPolynomial);
-void addPolynomials(Polynomial** polyArray, bool* createdPolynomial);
-void subtractPolynomials(Polynomial** polyArray, bool* createdPolynomial);
-void multiplyPolynomials(Polynomial** polyArray, bool* createdPolynomial);
+void polynomialOperation(Polynomial** polyArray, bool* createdPolynomial,
+                         int operation);
 
 int main(){
     //testPrint();
@@ -45,13 +44,13 @@ int main(){
                 testPolynomialsIfEqual(polyArray, createdPolynomial);
                 break;
             case 'a':
-                //addPolynomials(polyArray, createdPolynomial);
+                polynomialOperation(polyArray, createdPolynomial, 0);//add
                 break;
             case 's':
-                //subtractPolynomials(polyArray, createdPolynomial);
+                polynomialOperation(polyArray, createdPolynomial, 1);//subtract
                 break;
             case 'm':
-                //multiplyPolynomials(polyArray, createdPolynomial);
+                polynomialOperation(polyArray, createdPolynomial, 2);//multiply
                 break;
             default:
                 if(c != 'q')inputError();
@@ -151,6 +150,58 @@ void testPolynomialsIfEqual(Polynomial** polyArray, bool* createdPolynomial){
     }
 }
 
+void polynomialOperation(Polynomial** polyArray, bool* createdPolynomial,
+                         int operation){
+    char a;
+    cin>>a;
+    if(!isCapitalLetter(a)){
+        inputError();
+        return;
+    }
+    char b;
+    cin>>b;
+    if(!isCapitalLetter(b)){
+        inputError();
+        return;
+    }
+    int indexa = a-A_ASCII;
+    int indexb = b-A_ASCII;
+    if(!createdPolynomial[indexa]){
+        cout<<"There is no polynomial "<<a<<endl;
+        return;
+    }
+    if(!createdPolynomial[indexb]){
+        cout<<"There is no polynomial "<<b<<endl;
+        return;
+    }
+    cout<<"Choose a polynomial to store the result in (enter a capital letter): ";
+    char c;
+    cin>>c;
+    if(!isCapitalLetter(c)){
+        inputError();
+        return;
+    }
+    int indexc = c-A_ASCII;
+    //vector<int> temp;
+    //Polynomial p(0, temp);
+    switch(operation){
+        case 0:
+            if(c==a){
+                *polyArray[indexa] += *polyArray[indexb];
+            }
+            else if(c==b){
+                *polyArray[indexb] += *polyArray[indexa];
+            }
+            else{
+                if(createdPolynomial[indexc]){
+                    delete polyArray[indexc];
+                }
+                polyArray[indexc] = *polyArray[indexa] + *polyArray[indexb];
+                createdPolynomial[indexc] = 1;
+            }
+            break;
+    }
+}
 
 void printMenu(Polynomial** polyArray, bool* createdPolynomial){
     cout<<endl<<endl;

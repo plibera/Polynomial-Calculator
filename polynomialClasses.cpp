@@ -71,6 +71,10 @@ int Monomial::getCoefficient(){
     return coefficient;
 }
 
+void Monomial::setCoefficient(int coeff){
+    coefficient = coeff;
+    createName();
+}
 
 void Polynomial::createName(){
     char* c;
@@ -174,4 +178,39 @@ bool Polynomial::operator!= (Polynomial &p){
             result = 1;
     }
     return result;
+}
+
+bool Polynomial::operator+= (Polynomial &p){
+    int newCoeff;
+    for(int i = 0; i <= std::min(degree, p.getDegree()); ++i){
+        newCoeff = monomials[i]->getCoefficient()+p.getMonomial(i)->getCoefficient();
+        monomials[i]->setCoefficient(newCoeff);
+    }
+    for(int i = degree+1; i <= p.getDegree(); ++i){
+        Monomial* m = new Monomial(p.getMonomial(i)->getCoefficient(), i);
+        monomials[i] = m;
+    }
+    degree = std::max(degree, p.getDegree());
+    createName();
+    return true;
+}
+
+Polynomial* Polynomial::operator+ (Polynomial &p){
+    int deg = std::max(degree, p.getDegree());
+    std::vector<int> coeffs;
+    for(int i = 0; i <= std::min(degree, p.getDegree()); ++i){
+        coeffs.push_back(monomials[i]->getCoefficient()+p.getMonomial(i)->getCoefficient());
+    }
+    if(degree > p.getDegree()){
+        for(int i = p.getDegree()+1; i <= degree; ++i){
+            coeffs.push_back(monomials[i]->getCoefficient());
+        }
+    }
+    else{
+        for(int i = degree+1; i <= p.getDegree(); ++i){
+            coeffs.push_back(p.getMonomial(i)->getCoefficient());
+        }
+    }
+    Polynomial* poly = new Polynomial(deg, coeffs);
+    return poly;
 }

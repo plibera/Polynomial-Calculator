@@ -34,6 +34,7 @@ public:
     char* getName();
     friend std::ostream & operator<< (std::ostream &output, const Monomial &m);
     int getCoefficient();
+    void setCoefficient(int coeff);
 };
 
 class Polynomial{
@@ -50,6 +51,8 @@ public:
     friend std::ostream & operator<< (std::ostream &output, const Polynomial &p);
     bool operator== (Polynomial &p);
     bool operator!= (Polynomial &p);
+    bool operator+= (Polynomial &p);
+    Polynomial* operator+ (Polynomial &p);
     Monomial* getMonomial(int i);
     int getDegree();
 };
