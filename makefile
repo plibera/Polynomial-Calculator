@@ -1,2 +1,2 @@
-polynomials: main.cpp
-	g++ main.cpp -Wall -o polynomials
+polynomials: main.cpp polynomialClasses.cpp
+	g++ main.cpp polynomialClasses.cpp -Wall -o polynomials
