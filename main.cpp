@@ -2,7 +2,13 @@
   Polynomial calculator
   PROI Project 1
 
-  This code lets to interactively test every required feature of class Polynomial
+  This code lets to interactively test every required feature of class Polynomial.
+
+  Functions: newPolynomial, deletePolynomial, testPolynomialsIfEqual, polynomialOperation
+  communicate with the user, asking for and receiving names of polynomials to perform
+  the operation on. After receiving incorrect information they return immidiately
+  calling inputError().
+  All of these functions perform operations using operators from class Polynomial.
 */
 #include "polynomialClasses.h"
 
@@ -11,15 +17,34 @@
 
 using namespace std;
 
-void printMenu(Polynomial** polyArray, bool* createdPolynomial);
+
+/**Prints main menu - commands and list of currently existing arrays*/
+void printMenu(Polynomial** polyArray/**Main array of pointers to polynomials A to Z*/,
+               bool* createdPolynomial/**array with value 1 for every currently existing polynomial from polyArray*/);
+
+/**A simple print test, currently not used*/
 void testPrint();
+
+/**Informs about an error in input and clears the buffer*/
 void inputError();
+
 bool isCapitalLetter(char c);
+
+/**Adds a pointer to a new polynomial to polyArray*/
 void newPolynomial(Polynomial** polyArray, bool* createdPolynomial);
+
+/**Deletes a polynomial from polyArray*/
 void deletePolynomial(Polynomial** polyArray, bool* createdPolynomial);
+
+/**Test if two polynomials from polyArray are equal*/
 void testPolynomialsIfEqual(Polynomial** polyArray, bool* createdPolynomial);
+
+/**This function performs adding, subtracting and multiplying of polynomials.
+   It takes two names of polynomials from the user to perform the operation on, then asks the user
+   for the name of polynomial to store the result in. If the third name is one of
+   first two the operator += (-=, *=) is called, else operator + (-, *) is used.*/
 void polynomialOperation(Polynomial** polyArray, bool* createdPolynomial,
-                         int operation);
+                         int operation/**0 - addition, 1 - subtraction, 2 - multiplication*/);
 
 int main(){
     //testPrint();
@@ -64,6 +89,8 @@ int main(){
 
     return 0;
 }
+
+
 
 void newPolynomial(Polynomial** polyArray, bool* createdPolynomial){
     char c;

@@ -32,21 +32,23 @@ class Monomial{
 private:
     int exponent;
     int coefficient;
-    //string representation
+    ///string representation
     char* name;
-    //seperate address to share with the world:
+    ///seperate address to share with the world:
     char* nameCopy;
     bool nameCreated;
 
+    ///creates the name - a string representation of the monomial, for example 4x^2
     void createName();
 
 public:
     Monomial(int coeff, int exp);
     ~Monomial();
 
-    //checks if name is updated, passes pointer to nameCopy
+    ///checks if name is updated, returns pointer to nameCopy
     char* getName();
 
+    ///prints the name
     friend std::ostream & operator<< (std::ostream &output, const Monomial &m);
 
     int getCoefficient();
@@ -56,18 +58,22 @@ public:
 
 class Polynomial{
 private:
+    ///Pointers to monomials that create the polynomial, *monomials[0] has exponent 0, *monomials[1] exponent 1 etc.
     Monomial** monomials;
     int degree;
-    //string representation
+    ///string representation
     char* name;
 
+    /**Generates the string representation, using name variables of monomials.
+       Makes the name look more natural by taking care for negative and zero coefficients,
+       e.g. "2x^3 - 5x + 4"*/
     void createName();
 
 public:
-    Polynomial(int deg, std::vector<int> coefficients);
+    Polynomial(int deg/**polynomial degree*/,
+               std::vector<int> coefficients/**coefficients[i] is the coefficient of x^i*/);
     ~Polynomial();
 
-    //Overloaded operators
     friend std::ostream & operator<< (std::ostream &output, const Polynomial &p);
     bool operator== (Polynomial &p);
     bool operator!= (Polynomial &p);
@@ -78,9 +84,9 @@ public:
     bool operator*= (Polynomial &p);
     Polynomial* operator* (Polynomial &p);
 
-    //passes pointer to monomial with exponent i
+    ///returns pointer to monomial with exponent i
     Monomial* getMonomial(int i);
-    
+
     int getDegree();
 };
 
