@@ -1,10 +1,14 @@
 CC = g++
 
-polynomials: main.o polynomialClasses.o
-	$(CC) main.o polynomialClasses.o -o polynomials
+polynomials: main.o polynomial.o monomial.o
+	$(CC) -Wall main.o polynomial.o monomial.o -o polynomials
 
 main.o: main.cpp
 	$(CC) -c main.cpp
 
-polynomialClasses.o: polynomialClasses.cpp
-	$(CC) -c polynomialClasses.cpp
+polynomial.o: polynomial.cpp
+	$(CC) -c polynomial.cpp
+
+monomial.o: monomial.cpp
+	$(CC) -c monomial.cpp
+
