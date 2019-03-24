@@ -305,6 +305,7 @@ bool polynomialExists(int index, bool* createdPolynomial, bool print){
 }
 
 void inputError(){
+    cin.clear();
     cin.ignore(numeric_limits<streamsize>::max(),'\n');
     cout<<"Please try again"<<endl;
 }
