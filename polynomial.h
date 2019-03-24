@@ -16,6 +16,7 @@
 class Polynomial{
 private:
     int degree;//equals -1 for an empty polynomial
+    //every pointer is always allocated
     Monomial* monomials[MAX_POLYNOMIAL_DEGREE+1];
 
 public:
