@@ -2,6 +2,7 @@ CC = g++
 
 polynomials: main.o polynomial.o monomial.o tests.o
 	$(CC) -Wall main.o polynomial.o monomial.o tests.o -o polynomials
+	rm main.o polynomial.o monomial.o tests.o
 
 main.o: main.cpp
 	$(CC) -c main.cpp
